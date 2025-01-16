@@ -1,0 +1,89 @@
+import tkinter as tk
+from tkinter import messagebox, simpledialog
+
+# Classe principal
+class EstanteDeLivros:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Estante de Livros")
+        self.root.geometry("400x400")
+        
+        # Lista de livros
+        self.livros = []
+
+        # Interface
+        self.label = tk.Label(root, text="Gerenciar Estante de Livros", font=("Arial", 16))
+        self.label.pack(pady=10)
+
+        self.listbox = tk.Listbox(root, width=40, height=15)
+        self.listbox.pack(pady=10)
+
+        self.btn_adicionar = tk.Button(root, text="Adicionar Livro", command=self.adicionar_livro)
+        self.btn_adicionar.pack(pady=5)
+
+        self.btn_modificar = tk.Button(root, text="Modificar Livro", command=self.modificar_livro)
+        self.btn_modificar.pack(pady=5)
+
+        self.btn_remover = tk.Button(root, text="Remover Livro", command=self.remover_livro)
+        self.btn_remover.pack(pady=5)
+
+    def adicionar_livro(self):
+        # Solicitar dados do livro
+        titulo = simpledialog.askstring("Adicionar Livro", "Digite o título do livro:")
+        autor = simpledialog.askstring("Adicionar Livro", "Digite o autor do livro:")
+        
+        if titulo and autor:
+            self.livros.append({"Título": titulo, "Autor": autor})
+            self.atualizar_lista()
+            messagebox.showinfo("Sucesso", "Livro adicionado com sucesso!")
+        else:
+            messagebox.showwarning("Aviso", "Título e Autor são obrigatórios!")
+
+    def modificar_livro(self):
+        # Obter o índice selecionado
+        selecionado = self.listbox.curselection()
+        if not selecionado:
+            messagebox.showwarning("Aviso", "Selecione um livro para modificar!")
+            return
+
+        indice = selecionado[0]
+        livro = self.livros[indice]
+
+        # Solicitar novos dados
+        novo_titulo = simpledialog.askstring("Modificar Livro", "Digite o novo título do livro:", initialvalue=livro["Título"])
+        novo_autor = simpledialog.askstring("Modificar Livro", "Digite o novo autor do livro:", initialvalue=livro["Autor"])
+
+        if novo_titulo and novo_autor:
+            self.livros[indice] = {"Título": novo_titulo, "Autor": novo_autor}
+            self.atualizar_lista()
+            messagebox.showinfo("Sucesso", "Livro modificado com sucesso!")
+        else:
+            messagebox.showwarning("Aviso", "Título e Autor são obrigatórios!")
+
+    def remover_livro(self):
+        # Obter o índice selecionado
+        selecionado = self.listbox.curselection()
+        if not selecionado:
+            messagebox.showwarning("Aviso", "Selecione um livro para remover!")
+            return
+
+        indice = selecionado[0]
+        titulo = self.livros[indice]["Título"]
+
+        confirmar = messagebox.askyesno("Remover Livro", f"Tem certeza que deseja remover o livro '{titulo}'?")
+        if confirmar:
+            del self.livros[indice]
+            self.atualizar_lista()
+            messagebox.showinfo("Sucesso", "Livro removido com sucesso!")
+
+    def atualizar_lista(self):
+        # Atualizar a lista de livros exibida
+        self.listbox.delete(0, tk.END)
+        for livro in self.livros:
+            self.listbox.insert(tk.END, f"{livro['Título']} - {livro['Autor']}")
+
+# Inicialização da aplicação
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = EstanteDeLivros(root)
+    root.mainloop()
