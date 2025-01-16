@@ -1,0 +1,27 @@
+import tkinter as tk
+import subprocess
+
+
+class SistemaPrincipal:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Sistema de Gerenciamento de Livros")
+        self.root.geometry("400x200")
+
+        self.label = tk.Label(root, text="Bem-vindo ao Gerenciador de Livros", font=("Arial", 16))
+        self.label.pack(pady=10)
+
+        self.btn_links = tk.Button(root, text="Gerenciar Links de Livros", command=self.abrir_gerenciador_links)
+        self.btn_links.pack(pady=20)
+
+        self.btn_sair = tk.Button(root, text="Sair", command=root.quit)
+        self.btn_sair.pack(pady=5)
+
+    def abrir_gerenciador_links(self):
+        subprocess.Popen(["python", "gerenciador_links.py"])
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = SistemaPrincipal(root)
+    root.mainloop()
